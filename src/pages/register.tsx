@@ -63,11 +63,11 @@ export function Register() {
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
           type="text"
-          placeholder="Nome"
+          placeholder="Nome Completo"
           value={form.name}
           onChange={(e) => setForm({ ...form, name: e.target.value })}
           required
-          className="w-full p-2 border rounded"
+          className="w-full p-2 border rounded focus:outline-green-600"
         />
 
         <input
@@ -76,7 +76,7 @@ export function Register() {
           value={form.email}
           onChange={(e) => setForm({ ...form, email: e.target.value })}
           required
-          className="w-full p-2 border rounded"
+          className="w-full p-2 border rounded focus:outline-green-600"
         />
 
         <input
@@ -85,7 +85,7 @@ export function Register() {
           value={form.password}
           onChange={(e) => setForm({ ...form, password: e.target.value })}
           required
-          className="w-full p-2 border rounded"
+          className="w-full p-2 border rounded focus:outline-green-600"
         />
 
         <input
@@ -96,7 +96,7 @@ export function Register() {
             setForm({ ...form, confirmPassword: e.target.value })
           }
           required
-          className="w-full p-2 border rounded"
+          className="w-full p-2 border rounded focus:outline-green-600"
         />
 
         {error && <p className="text-red-600 text-sm">{error}</p>}
@@ -108,7 +108,7 @@ export function Register() {
 
         <button
           type="submit"
-          className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-500 w-full"
+          className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-500 w-full cursor-pointer"
         >
           Registrar
         </button>
