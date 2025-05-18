@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { login } from "../../api/auth/login";
 import { getRoleFromToken } from "../../api/security/decode-jwt";
@@ -8,6 +8,20 @@ export function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      const role = getRoleFromToken(token);
+      if (role === "ADMIN") {
+        navigate("/dashboard");
+      } else if (role === "USER") {
+        navigate("/profile");
+      } else {
+        navigate("/");
+      }
+    }
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
