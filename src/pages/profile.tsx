@@ -15,17 +15,24 @@ export function Profile() {
       window.location.href = "/";
       return;
     }
-    fetchUser();
+    fetchUser(token);
   }, []);
 
-  async function fetchUser() {
+  async function fetchUser(token: string) {
     try {
-      const token = localStorage.getItem("token");
-      const userId = getUserIdFromToken(token!);
+      const userId = getUserIdFromToken(token);
       const data = await getCurrentUser(userId);
+
+      if (data.role !== "USER") {
+        alert("Acesso não autorizado.");
+        window.location.href = "/";
+        return;
+      }
+
       setUser(data);
     } catch (err) {
       console.error("Erro ao buscar usuário", err);
+      window.location.href = "/";
     }
   }
 
@@ -55,7 +62,10 @@ export function Profile() {
       setEditing(false);
       setForm({ name: "", password: "" });
       setError("");
-      fetchUser();
+      const token = localStorage.getItem("token");
+      if (token) {
+        fetchUser(token);
+      }
     } catch (err) {
       console.error("Erro ao atualizar perfil", err);
     }
