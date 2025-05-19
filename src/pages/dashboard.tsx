@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
+import { getUserIdFromToken } from "../api/security/decode-jwt";
 import type { User } from "../api/users/users";
 import {
   createUser,
   deleteUser,
+  getCurrentUser,
   getUsers,
   updateUser,
 } from "../api/users/users";
@@ -29,13 +31,26 @@ export function Dashboard() {
     const token = localStorage.getItem("token");
     if (!token) {
       navigate("/");
+      return;
     }
 
-    fetchUsers();
-  }, []);
+    const verifyRole = async () => {
+      try {
+        const userId = getUserIdFromToken(token);
+        const currentUser = await getCurrentUser(userId);
 
-  useEffect(() => {
-    fetchUsers();
+        if (currentUser.role !== "ADMIN") {
+          navigate("/");
+        } else {
+          fetchUsers();
+        }
+      } catch (err) {
+        console.error("Erro ao verificar usuário", err);
+        navigate("/");
+      }
+    };
+
+    verifyRole();
   }, []);
 
   async function fetchUsers() {
