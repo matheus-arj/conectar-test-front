@@ -13,18 +13,28 @@ import {
 export function Dashboard() {
   const [users, setUsers] = useState<User[]>([]);
   const [editingUser, setEditingUser] = useState<User | null>(null);
-  const [form, setForm] = useState<{
-    name: string;
-    email: string;
-    password: string;
-    role: "ADMIN" | "USER";
-  }>({
+  const [form, setForm] = useState({
     name: "",
     email: "",
     password: "",
-    role: "USER",
+    role: "USER" as "ADMIN" | "USER",
   });
   const [showCreate, setShowCreate] = useState(false);
+  const [filters, setFilters] = useState<{
+    role: string;
+    sortBy: "name" | "createdAt";
+    sortOrder: "asc" | "desc";
+    page: number;
+    perPage: number;
+  }>({
+    role: "",
+    sortBy: "name",
+    sortOrder: "asc",
+    page: 1,
+    perPage: 5,
+  });
+  const [totalPages, setTotalPages] = useState(1);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -53,9 +63,22 @@ export function Dashboard() {
     verifyRole();
   }, []);
 
+  useEffect(() => {
+    fetchUsers();
+  }, [filters]);
+
   async function fetchUsers() {
-    const list = await getUsers();
-    setUsers(list);
+    const { role, sortBy, sortOrder, page, perPage } = filters;
+    const roleParam = role === "ADMIN" || role === "USER" ? role : undefined;
+    const response = await getUsers({
+      role: roleParam,
+      sortBy,
+      sortOrder,
+      page,
+      perPage,
+    });
+    setUsers(response.data);
+    setTotalPages(response.meta.lastPage);
   }
 
   async function handleCreate(e: React.FormEvent) {
@@ -107,12 +130,58 @@ export function Dashboard() {
           Logout
         </button>
       </div>
+
       <button
         onClick={() => setShowCreate(true)}
         className="mb-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-500 cursor-pointer"
       >
         Criar novo usuário
       </button>
+
+      {/* Filtros */}
+      <div className="mb-4 flex gap-4">
+        <select
+          value={filters.role}
+          onChange={(e) =>
+            setFilters({ ...filters, role: e.target.value, page: 1 })
+          }
+          className="p-2 border rounded"
+        >
+          <option value="">Todas as roles</option>
+          <option value="ADMIN">Administrador</option>
+          <option value="USER">Usuário</option>
+        </select>
+
+        <select
+          value={filters.sortBy}
+          onChange={(e) =>
+            setFilters({
+              ...filters,
+              sortBy: e.target.value as "name" | "createdAt",
+              page: 1,
+            })
+          }
+          className="p-2 border rounded"
+        >
+          <option value="name">Ordenar por nome</option>
+          <option value="createdAt">Ordenar por data de criação</option>
+        </select>
+
+        <select
+          value={filters.sortOrder}
+          onChange={(e) =>
+            setFilters({
+              ...filters,
+              sortOrder: e.target.value as "asc" | "desc",
+              page: 1,
+            })
+          }
+          className="p-2 border rounded"
+        >
+          <option value="asc">Ascendente</option>
+          <option value="desc">Descendente</option>
+        </select>
+      </div>
 
       <table className="w-full border">
         <thead>
@@ -156,6 +225,28 @@ export function Dashboard() {
         </tbody>
       </table>
 
+      {/* Paginação */}
+      <div className="mt-4 flex justify-center items-center gap-4">
+        <button
+          disabled={filters.page <= 1}
+          onClick={() => setFilters({ ...filters, page: filters.page - 1 })}
+          className="px-3 py-1 border rounded disabled:opacity-50"
+        >
+          Anterior
+        </button>
+        <span>
+          Página {filters.page} de {totalPages}
+        </span>
+        <button
+          disabled={filters.page >= totalPages}
+          onClick={() => setFilters({ ...filters, page: filters.page + 1 })}
+          className="px-3 py-1 border rounded disabled:opacity-50"
+        >
+          Próxima
+        </button>
+      </div>
+
+      {/* Modal criar usuário */}
       {showCreate && (
         <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center">
           <form
@@ -196,7 +287,6 @@ export function Dashboard() {
               <option value="USER">Usuário</option>
               <option value="ADMIN">Administrador</option>
             </select>
-
             <div className="flex justify-end gap-2">
               <button
                 type="button"
@@ -216,6 +306,7 @@ export function Dashboard() {
         </div>
       )}
 
+      {/* Modal editar usuário */}
       {editingUser && (
         <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center">
           <form
@@ -227,23 +318,22 @@ export function Dashboard() {
               placeholder="Novo nome"
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
-              className="w-full p-2 border rounded cursor: poj"
+              className="w-full p-2 border rounded focus:outline-none focus:border-green-600"
             />
             <input
               placeholder="Novo email"
               type="email"
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
-              className="w-full p-2 border rounded"
+              className="w-full p-2 border rounded focus:outline-none focus:border-green-600"
             />
             <input
               placeholder="Nova senha"
               type="password"
               value={form.password}
               onChange={(e) => setForm({ ...form, password: e.target.value })}
-              className="w-full p-2 border rounded"
+              className="w-full p-2 border rounded focus:outline-none focus:border-green-600"
             />
-
             <div className="flex justify-end gap-2">
               <button
                 type="button"
@@ -254,7 +344,7 @@ export function Dashboard() {
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 bg-blue-600 text-white rounded cursor-pointer"
+                className="px-4 py-2 bg-green-600 text-white rounded cursor-pointer"
               >
                 Salvar
               </button>
