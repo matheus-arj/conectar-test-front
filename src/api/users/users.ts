@@ -9,8 +9,28 @@ export interface User {
   createdAt: Date;
 }
 
-export async function getUsers(): Promise<User[]> {
-  const res = await api.get("/users");
+interface GetUsersParams {
+  role?: "ADMIN" | "USER";
+  sortBy?: "name" | "createdAt";
+  sortOrder?: "asc" | "desc";
+  page?: number;
+  perPage?: number;
+}
+
+interface GetUsersResponse {
+  data: User[];
+  meta: {
+    total: number;
+    page: number;
+    lastPage: number;
+    perPage: number;
+  };
+}
+
+export async function getUsers(
+  params: GetUsersParams
+): Promise<GetUsersResponse> {
+  const res = await api.get("/users", { params });
   return res.data;
 }
 
@@ -47,4 +67,3 @@ export async function registerUser(data: {
   const response = await api.post("/auth/register", data);
   return response;
 }
-
