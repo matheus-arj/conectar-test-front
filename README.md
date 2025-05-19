@@ -16,6 +16,7 @@ Este projeto é a implementação de um sistema de autenticação com interface 
 ## 📱 Funcionalidades Implementadas
 
 ### 1. Tela de Login
+
 - Formulário com campos de **e-mail** e **senha**.
 - Autenticação via API com armazenamento de token JWT no `localStorage`.
 - Redirecionamento após login:
@@ -23,10 +24,12 @@ Este projeto é a implementação de um sistema de autenticação com interface 
   - Usuário Comum → Tela de perfil.
 
 ### 2. Tela de Cadastro
+
 - Formulário com campos de **nome**, **e-mail** e **senha**.
 - Redirecionamento automático para a tela de login após cadastro bem-sucedido.
 
 ### 3. Tela de Listagem de Usuários (Admin)
+
 - Listagem de todos os usuários com os seguintes dados:
   - Nome
   - E-mail
@@ -36,6 +39,7 @@ Este projeto é a implementação de um sistema de autenticação com interface 
 - (Opcional) Filtros por papel e ordenação por nome ou data de criação.
 
 ### 4. Tela de Perfil (Usuário)
+
 - Exibição dos dados do usuário logado:
   - Nome
   - E-mail
@@ -46,6 +50,7 @@ Este projeto é a implementação de um sistema de autenticação com interface 
 - Logout com limpeza de token e proteção contra acesso não autorizado após logout.
 
 ### 5. Interface Responsiva
+
 - Layout adaptado para **desktop**, **tablet** e **mobile**.
 
 ## 🧪 Como Rodar Localmente
@@ -57,8 +62,30 @@ Este projeto é a implementação de um sistema de autenticação com interface 
 
 ### Instalação
 
+#### Passo 1: Clonar e rodar a API (backend)
+
 ```bash
-# Clonar o repositório
+# Clonar o repositório do backend
+git clone https://github.com/matheus-arj/conectar-test.git
+cd conectar-test
+
+# Instalar dependências
+yarn install
+# ou
+npm install
+
+# Rodar o backend
+yarn dev
+# ou
+npm run dev
+```
+
+A API estará disponível em http://localhost:3000.
+
+#### Passo 2: Clonar e rodar o Frontend
+
+```bash
+# Clonar o repositório do frontend
 git clone https://github.com/matheus-arj/conectar-test-front.git
 cd conectar-test-front
 
@@ -75,21 +102,24 @@ npm run dev
 
 A aplicação estará disponível em http://localhost:5173.
 
-🔐 Autenticação
+### 🔐 Autenticação
+
 - Após login, o token JWT é armazenado no localStorage.
 
 - As rotas protegidas verificam a existência e validade do token.
 
 - Usuários não autenticados são redirecionados para a tela de login.
 
-🧼 Boas Práticas
+### 🧼 Boas Práticas
+
 - Código modularizado e reutilizável.
 
 - Separação clara entre lógica de API e páginas.
 
 - Validações simples de formulário com feedback ao usuário.
 
-💼 Sobre o Desafio
+### 💼 Sobre o Desafio
+
 Este projeto foi desenvolvido como parte de um desafio técnico para vaga de desenvolvedor frontend. O foco principal foi:
 
 - Implementar os requisitos funcionais solicitados.
@@ -97,4 +127,3 @@ Este projeto foi desenvolvido como parte de um desafio técnico para vaga de des
 - Demonstrar boas práticas de desenvolvimento com React + TS.
 
 - Garantir uma boa experiência de usuário em diferentes dispositivos.
-
