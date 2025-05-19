@@ -125,7 +125,7 @@ export function Profile() {
             placeholder="Novo nome"
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
-            className="w-full p-2 border border-gray-300 rounded"
+            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-green-600"
           />
 
           <input
@@ -133,7 +133,7 @@ export function Profile() {
             placeholder="Nova senha (opcional)"
             value={form.password}
             onChange={(e) => setForm({ ...form, password: e.target.value })}
-            className="w-full p-2 border border-gray-300 rounded"
+            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-green-600"
           />
 
           {error && <p className="text-red-600">{error}</p>}
